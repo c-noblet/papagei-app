@@ -29,7 +29,6 @@ export default class DatabaseModel {
         title STRING(255) NOT NULL,
         picture STRING(255) NOT NULL)`;
       await this.connection.executeSql(query);
-      console.log('create db');
       resolve();
     });
   }
@@ -38,7 +37,6 @@ export default class DatabaseModel {
     return new Promise(async (resolve) => {
       const query = `INSERT INTO playlist (video_id, title, picture) VALUES ('${item.id}', '${item.title}', '${item.picture}')`;
       await this.connection.executeSql(query);
-      console.log('add');
       resolve();
     })
   }

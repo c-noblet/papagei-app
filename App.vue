@@ -5,6 +5,7 @@
       :on-press="deleteAll"
       title="delete all"
     />
+    <text>Hello World</text>
     <view v-if="playlist.length >= 1">
       <text v-for="item in playlist" :key="item.id">{{ item.title }}</text>
     </view>
@@ -39,15 +40,14 @@ export default {
             const id = item.data.split('watch?v=')[1];
             const result = await fetch(`${configs.api}/info/${id}`)
             const info = await result.json();
-            console.log(info.title);
-            toast(info.title);
+            console.log(info);
             await this.db.add({
               id: info.id,
               title: info.title,
-              picture: info.picture,
+              picture: info.picture
             });
+            toast(info.title);
             this.playlist = await this.db.getAll();
-            console.log('updated');
           }
         });
       }
@@ -56,7 +56,7 @@ export default {
   methods: {
     deleteAll() {
       this.db.deleteAll();
-    }
+    },
   },
   beforeDestroy() {
     if (this.db) {
