@@ -45,8 +45,6 @@ export default class DatabaseModel {
         await this.db.execSQL(query);
         query = `INSERT INTO settings (key, value) VALUES ('api', '')`;
         await this.db.execSQL(query);
-        query = `INSERT INTO settings (key, value) VALUES ('channel', '')`;
-        await this.db.execSQL(query);
         resolve();
       } catch (error) {
         console.log(error);
@@ -110,12 +108,10 @@ export default class DatabaseModel {
     });
   }
 
-  setSettings(settings) {
+  setSettings(key, value) {
     return new Promise(async (resolve, reject) => {
       try {
-        let query = `UPDATE settings SET value = '${settings.api}' WHERE key = 'api'`;
-        await this.db.execSQL(query);
-        query = `UPDATE settings SET value = '${settings.channel}' WHERE key = 'channel'`;
+        let query = `UPDATE settings SET value = '${value}' WHERE key = '${key}'`;
         await this.db.execSQL(query);
         resolve();
       } catch (error) {

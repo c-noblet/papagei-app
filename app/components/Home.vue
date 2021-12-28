@@ -31,6 +31,7 @@ export default {
   async created() {
     global.db = new Database();
     await global.db.openDatabase();
+    global.api = '';
 
     bus.$on('reloadApp', () => {
       this.reloadApp();
@@ -59,7 +60,6 @@ export default {
     async reloadApp() {
       const settings = await global.db.getSettings();
       global.api = settings.api;
-      global.channel = settings.channel;
       const playlist = await global.db.getAll();
       this.$store.dispatch('setPlaylist', playlist);
     },

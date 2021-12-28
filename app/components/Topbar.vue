@@ -4,64 +4,35 @@
     android:flat="true"
   >
     <ActionItem
-      text="Connecter le Bot"
-      android.position="popup"
-      @tap="connectBot"
-    />
-    <ActionItem
       text="Paramètres"
       android.position="popup"
-      @tap="showSettingModal"
-    />
-    <ActionItem
-      text="Delete All"
-      android.position="popup"
-      @tap="deleteDatabase"
+      @tap="promptUrl"
     />
   </ActionBar>
 </template>
 
 <script>
-import SettingModal from './SettingModal.vue';
 import { toast } from '../utils';
 import { bus } from '../app';
 export default {
   name: 'Topbar',
-  computed: {
-    modal() {
-      return this.$store.state.modal;
-    },
-  },
   methods: {
     deleteDatabase() {
       global.db.deleteAll();
     },
-    async showSettingModal() {
-      this.$showModal(SettingModal).then(async (form) => {
-        try {
-          if (form.api && form.channel) {
-            await global.db.setSettings(form);
-            toast('Paramètre enregistré');
-            bus.$emit('reloadApp');
-          }
-        } catch (error) {
-          console.log(error);
-        }
+    async promptUrl() {
+      const result = await prompt({
+        title: "Saisissez l'url de l'API",
+        okButtonText: "Sauvegarder",
+        cancelButtonText: "Fermer",
+        defaultText: global.api,
       });
+      if (result.result) {
+        await global.db.setSettings('api', result.text);
+        toast('Paramètre enregistré');
+        bus.$emit('reloadApp');
+      }
     },
-    async connectBot() {
-      await fetch(`${global.api}/connect/${global.channel}`)
-    }
-  },
-  components: {
-    SettingModal
   }
 }
 </script>
-
-<style scoped>
-  /*ActionBar {
-    background-color: #e74c3c;
-    color: #ffffff;
-  }*/
-</style>

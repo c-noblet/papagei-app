@@ -20,7 +20,8 @@ export default {
   methods: {
     async onPlay(vid) {
       try {
-        await fetch(`${configs.api}/play/${vid}`)
+        await fetch(`${global.api}/play/${vid}`)
+        toast('Play');
       } catch (error) {
         console.log(error);
       }
