@@ -5,21 +5,7 @@ from '@triniwiz/nativescript-toasty';
 
 export const getSharingIntent = (args) => {
   const intent = args.activity.getIntent();
-  const Patterns = android.util.Patterns;
-  //let Matcher = java.util.regex.Matcher;
-  //const ListUrl = [];
   const text = intent.getStringExtra(android.content.Intent.EXTRA_TEXT);
-  /*if (new String().valueOf() !== "null") {
-    const Matcher = Patterns.WEB_URL.matcher(text);
-    while (Matcher.find()) {
-      const url = Matcher.group();
-      ListUrl.push(url);
-    }
-    return {
-      "text": text,
-      "listUrl": ListUrl
-    };
-  }*/
   return text
 }
 

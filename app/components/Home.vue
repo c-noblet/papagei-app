@@ -13,7 +13,6 @@ import Tabview from './Tabview.vue';
 import { Application } from '@nativescript/core'
 import { getSharingIntent, toast, fetchApi } from '../utils';
 import { bus } from '../app';
-import { log } from '@nativescript/core/profiling';
 export default {
   computed: {
     modal() {
@@ -65,9 +64,8 @@ export default {
     },
     async showModal() {
       this.$showModal(AddModal).then(async (form) => {
-        if (form) {
+        if (form.hasOwnProperty('vid')) {
           await global.db.add(form);
-          toast('Vidéo ajouté');
           bus.$emit('reloadApp');
         }
       });

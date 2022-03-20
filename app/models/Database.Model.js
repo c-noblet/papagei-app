@@ -1,4 +1,6 @@
 import Sqlite from 'nativescript-sqlite';
+// import { knownFolders } from 'tns-core-modules/file-system';
+import { knownFolders, Folder } from '@nativescript/core/file-system';
 import { toast } from '../utils';
 
 export default class DatabaseModel {
@@ -53,13 +55,59 @@ export default class DatabaseModel {
     });
   }
 
+  exportData() {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const query = `SELECT * FROM playlist;`;
+        let data = [];
+        const results = await this.db.all(query);
+        results.forEach((row) => { // Row
+          data.push({
+            id: row[0],
+            vid: row[1],
+            title: row[2],
+            category: row[3],
+            picture: row[4]
+          });
+        });
+
+        const downloadsPath = android.os.Environment.getExternalStoragePublicDirectory(
+          android.os.Environment.DIRECTORY_DOWNLOADS
+        ).toString();
+        const downloadsFolder = Folder.fromPath(downloadsPath);
+        const file = downloadsFolder.getFile(`papagei-export-${Date.now()}.json`);
+
+        file.writeText(JSON.stringify(data))
+        .then(result => {
+          console.log(result);
+        }).catch(err => {
+          console.log(err);
+        });
+
+        toast('Sons exportés dans : Downloads');
+        resolve(data);
+      } catch (error) {
+        console.log(error);
+        reject(error);
+      }
+    });
+  }
+
+  importData() {
+    /*const downloadsPath = android.os.Environment.getExternalStoragePublicDirectory(
+      android.os.Environment.DIRECTORY_DOWNLOADS
+    ).toString();
+    const downloadsFolder = Folder.fromPath(downloadsPath);
+    const file = downloadsFolder.getFile('papagei-export.json');
+    */
+  }
+
   add(item) {
     return new Promise(async (resolve, reject) => {
-      console.log('add');
       try {
         const query = `INSERT INTO playlist (video_id, title, category, picture) VALUES ('${item.vid}', '${item.title}', '${item.category}', '${item.picture}')`;
-        const id = await this.db.execSQL(query);
-        toast('Video added');
+        await this.db.execSQL(query);
+        toast('Vidéo ajouté');
         resolve();
       } catch (error) {
         console.log(error);
@@ -154,7 +202,7 @@ export default class DatabaseModel {
       this.db.close();
     } catch (error) {
       console.log(error);
-      
+
       reject(error);
     }
   }
