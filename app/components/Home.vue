@@ -64,9 +64,8 @@ export default {
     },
     async showModal() {
       this.$showModal(AddModal).then(async (form) => {
-        if (form) {
+        if (form.hasOwnProperty('vid')) {
           await global.db.add(form);
-          toast('Vidéo ajouté');
           bus.$emit('reloadApp');
         }
       });
