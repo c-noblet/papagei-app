@@ -75,11 +75,10 @@ export default class DatabaseModel {
           android.os.Environment.DIRECTORY_DOWNLOADS
         ).toString();
         const downloadsFolder = Folder.fromPath(downloadsPath);
-        const file = downloadsFolder.getFile('papagei-export.json');
+        const file = downloadsFolder.getFile(`papagei-export-${Date.now()}.json`);
 
         file.writeText(JSON.stringify(data))
         .then(result => {
-          console.log('success');
           console.log(result);
         }).catch(err => {
           console.log(err);
@@ -95,21 +94,20 @@ export default class DatabaseModel {
   }
 
   importData() {
-    const downloadsPath = android.os.Environment.getExternalStoragePublicDirectory(
+    /*const downloadsPath = android.os.Environment.getExternalStoragePublicDirectory(
       android.os.Environment.DIRECTORY_DOWNLOADS
     ).toString();
     const downloadsFolder = Folder.fromPath(downloadsPath);
     const file = downloadsFolder.getFile('papagei-export.json');
-    
+    */
   }
 
   add(item) {
     return new Promise(async (resolve, reject) => {
-      console.log('add');
       try {
         const query = `INSERT INTO playlist (video_id, title, category, picture) VALUES ('${item.vid}', '${item.title}', '${item.category}', '${item.picture}')`;
         await this.db.execSQL(query);
-        toast('Video added');
+        toast('Vidéo ajouté');
         resolve();
       } catch (error) {
         console.log(error);
