@@ -13,7 +13,6 @@ import Tabview from './Tabview.vue';
 import { Application } from '@nativescript/core'
 import { getSharingIntent, toast, fetchApi } from '../utils';
 import { bus } from '../app';
-import { log } from '@nativescript/core/profiling';
 export default {
   computed: {
     modal() {
