@@ -38,24 +38,32 @@ export default {
     
     bus.$emit('reloadApp');
 
+    Application.android.on('activityStarted', async (args) => {
+      this.getIntent(args);
+    });
     Application.android.on('activityNewIntent', async (args) => {
-      try {
-        const url = getSharingIntent(args);
-        const id = url.split('watch?v=')[1];
-        const infos = await fetchApi(`/info/${id}`);
-        this.$store.commit('setForm', {
-          title: (infos.title + '').replace(/[\\"']/g, ' ').replace(/\u0000/g, ' '),
-          vid: infos.id,
-          category: 0,
-          picture: infos.picture
-        });
-        this.showModal();
-      } catch (error) {
-        console.log(error);
-      }
+      this.getIntent(args);
     });
   },
   methods: {
+    async getIntent(args) {
+      try {
+        const url = getSharingIntent(args);
+        if (url !== null) {
+          const id = url.split('watch?v=')[1];
+          const infos = await fetchApi(`/info/${id}`);
+          this.$store.commit('setForm', {
+            title: (infos.title + '').replace(/[\\"']/g, ' ').replace(/\u0000/g, ' '),
+            vid: infos.id,
+            category: 0,
+            picture: infos.picture
+          });
+          this.showModal();
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
     async reloadApp() {
       const settings = await global.db.getSettings();
       global.api = settings.api;
