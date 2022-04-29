@@ -22,8 +22,10 @@
 </template>
 
 <script>
-import { toast } from '../utils';
+import { toast, readTextFromUri } from '../utils';
 import { bus } from '../app';
+import { Application, File, Folder } from '@nativescript/core';
+import { openFilePicker } from '@nativescript-community/ui-document-picker';
 export default {
   name: 'Topbar',
   methods: {
@@ -34,7 +36,17 @@ export default {
       await global.db.exportData();
     },
     async importDb() {
-      await global.db.importData();
+      try {
+        bus.$emit('intent', 'import');
+        const files = await openFilePicker({
+          extensions: ['json']
+        });
+        const content = readTextFromUri(files.files[0]);
+        await global.db.importData(JSON.parse(content));
+        bus.$emit('reloadApp');
+      } catch (error) {
+        console.error('error ->', error);
+      }
     },
     async promptUrl() {
       const result = await prompt({
