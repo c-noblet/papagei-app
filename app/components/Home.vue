@@ -44,14 +44,12 @@ export default {
     bus.$emit('reloadApp');
 
     Application.android.on('activityNewIntent', async (args) => {
-      toast('activityNewIntent');
       if (this.previousIntent == 'mounted') {
         this.getIntent('activityNewIntent', args);
       }
     });
 
     Application.android.on('activityStarted', async (args) => {
-      toast('activityStarted ' + this.previousIntent);
       if (this.previousIntent !== 'import') {
         this.getIntent('activityStarted', args);
       }
