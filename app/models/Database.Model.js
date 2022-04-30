@@ -93,13 +93,19 @@ export default class DatabaseModel {
     });
   }
 
-  importData() {
-    /*const downloadsPath = android.os.Environment.getExternalStoragePublicDirectory(
-      android.os.Environment.DIRECTORY_DOWNLOADS
-    ).toString();
-    const downloadsFolder = Folder.fromPath(downloadsPath);
-    const file = downloadsFolder.getFile('papagei-export.json');
-    */
+  importData(data) {
+    return new Promise((resolve, reject) => {
+      try {
+        data.forEach(async line => {
+          await this.add(line);
+        });
+        toast('Fichier importé');
+        resolve();
+      } catch (error) {
+        console.log(error);
+        reject(error);  
+      }
+    });
   }
 
   add(item) {

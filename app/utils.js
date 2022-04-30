@@ -1,12 +1,10 @@
-import {
-  Toasty
-}
-from '@triniwiz/nativescript-toasty';
+import { Toasty } from '@triniwiz/nativescript-toasty';
+import { android as androidApplication } from '@nativescript/core/application';
 
 export const getSharingIntent = (args) => {
   const intent = args.activity.getIntent();
   const text = intent.getStringExtra(android.content.Intent.EXTRA_TEXT);
-  return text
+  return text;
 }
 
 export const toast = (str) => {
@@ -14,6 +12,17 @@ export const toast = (str) => {
     text: str
   });
   toast.show();
+}
+
+export const readTextFromUri = ( filePath) => {
+  const stringBuilder = new java.lang.StringBuilder();
+  const inputStream = androidApplication.context.getContentResolver().openInputStream(android.net.Uri.parse(filePath));
+    const reader = new java.io.BufferedReader(new java.io.InputStreamReader(inputStream));
+  let line;
+  while ((line = reader.readLine()) != null) {
+    stringBuilder.append(line);
+  }
+  return stringBuilder.toString();
 }
 
 export const fetchApi = (path) => {
