@@ -24,7 +24,6 @@
 <script>
 import { toast, readTextFromUri } from '../utils';
 import { bus } from '../app';
-import { Application, File, Folder } from '@nativescript/core';
 import { openFilePicker } from '@nativescript-community/ui-document-picker';
 export default {
   name: 'Topbar',
@@ -32,9 +31,11 @@ export default {
     deleteDatabase() {
       global.db.deleteAll();
     },
+    // Export database into json file
     async exportDb() {
       await global.db.exportData();
     },
+    // Open File chooser for file import
     async importDb() {
       try {
         bus.$emit('intent', 'import');
@@ -45,9 +46,10 @@ export default {
         await global.db.importData(JSON.parse(content));
         bus.$emit('reloadApp');
       } catch (error) {
-        console.error('error ->', error);
+        console.error(error);
       }
     },
+    // API url setter
     async promptUrl() {
       const result = await prompt({
         title: "Saisissez l'url de l'API",
@@ -56,7 +58,6 @@ export default {
         defaultText: global.api,
       });
       if (result.result) {
-        console.log(result);
         await global.db.setSettings('api', result.text);
         toast('Paramètre enregistré');
         bus.$emit('reloadApp');
