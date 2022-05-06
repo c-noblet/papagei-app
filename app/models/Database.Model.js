@@ -1,8 +1,6 @@
 import Sqlite from 'nativescript-sqlite';
-// import { knownFolders } from 'tns-core-modules/file-system';
 import { knownFolders, Folder } from '@nativescript/core/file-system';
 import { toast } from '../utils';
-
 export default class DatabaseModel {
 
   constructor() {
@@ -21,7 +19,7 @@ export default class DatabaseModel {
         if (this.db.isOpen()) {
           resolve();
         } else {
-          reject('Database is not open');
+          reject('Base de données fermé');
         }
       } catch (error) {
         console.log(error);
@@ -58,10 +56,11 @@ export default class DatabaseModel {
   exportData() {
     return new Promise(async (resolve, reject) => {
       try {
+        // Get Table data
         const query = `SELECT * FROM playlist;`;
         let data = [];
         const results = await this.db.all(query);
-        results.forEach((row) => { // Row
+        results.forEach((row) => { // Table row
           data.push({
             id: row[0],
             vid: row[1],
@@ -71,12 +70,12 @@ export default class DatabaseModel {
           });
         });
 
+        // Write data in the Download Folder 
         const downloadsPath = android.os.Environment.getExternalStoragePublicDirectory(
           android.os.Environment.DIRECTORY_DOWNLOADS
         ).toString();
         const downloadsFolder = Folder.fromPath(downloadsPath);
         const file = downloadsFolder.getFile(`papagei-export-${Date.now()}.json`);
-
         file.writeText(JSON.stringify(data))
         .then(result => {
           console.log(result);
@@ -128,7 +127,7 @@ export default class DatabaseModel {
         const query = `SELECT * FROM playlist;`;
         let data = [];
         const results = await this.db.all(query);
-        results.forEach((row) => { // Row
+        results.forEach((row) => { // Table row
           data.push({
             id: row[0],
             vid: row[1],
@@ -151,7 +150,7 @@ export default class DatabaseModel {
         const query = `SELECT * FROM settings;`;
         let data = {};
         const results = await this.db.all(query);
-        results.forEach((row) => { // Row
+        results.forEach((row) => { // Table row
           data[row[1]] = row[2];
         });
         resolve(data);
@@ -208,7 +207,6 @@ export default class DatabaseModel {
       this.db.close();
     } catch (error) {
       console.log(error);
-
       reject(error);
     }
   }

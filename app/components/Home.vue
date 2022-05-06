@@ -33,16 +33,19 @@ export default {
     await global.db.openDatabase();
     global.api = '';
 
+    // App reloader
     bus.$on('reloadApp', () => {
       this.reloadApp();
     });
 
+    // Save previous intent
     bus.$on('intent', (intent) => {
       this.previousIntent = intent;
     })
     
     bus.$emit('reloadApp');
 
+    // Listen to new video intents
     Application.android.on('activityNewIntent', async (args) => {
       if (this.previousIntent == 'mounted') {
         this.getIntent('activityNewIntent', args);
@@ -59,10 +62,10 @@ export default {
     });
   },
   methods: {
+    // Parse video adding intents
     async getIntent(intent, args) {
       try {
         const url = getSharingIntent(args);
-        console.log(intent, this.previousIntent, url);
         if (url == null || intent == this.previousIntent) {
           return false;
         } else {
@@ -91,6 +94,7 @@ export default {
     async showModal() {
       this.$showModal(AddModal).then(async (form) => {
         if (form.hasOwnProperty('vid')) {
+          // Add data into database
           await global.db.add(form);
           bus.$emit('reloadApp');
         }

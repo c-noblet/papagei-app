@@ -1,12 +1,14 @@
 import { Toasty } from '@triniwiz/nativescript-toasty';
 import { android as androidApplication } from '@nativescript/core/application';
 
+// Decode the sharing intent into the intent value
 export const getSharingIntent = (args) => {
   const intent = args.activity.getIntent();
   const text = intent.getStringExtra(android.content.Intent.EXTRA_TEXT);
   return text;
 }
 
+// Show a toast
 export const toast = (str) => {
   const toast = new Toasty({
     text: str
@@ -14,6 +16,7 @@ export const toast = (str) => {
   toast.show();
 }
 
+// Read file value from a file uri
 export const readTextFromUri = ( filePath) => {
   const stringBuilder = new java.lang.StringBuilder();
   const inputStream = androidApplication.context.getContentResolver().openInputStream(android.net.Uri.parse(filePath));
@@ -25,6 +28,7 @@ export const readTextFromUri = ( filePath) => {
   return stringBuilder.toString();
 }
 
+// API fetcher
 export const fetchApi = (path) => {
   return new Promise(async (resolve, reject) => {
     try {
