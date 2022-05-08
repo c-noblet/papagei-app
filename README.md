@@ -1,7 +1,7 @@
 # Papagei Android App
 
 ## Installation
-Télécharger [ici](https://github.com/c-noblet/papagei-app/releases/download/1.2.2/papagei.apk) l'application sur votre smartphone android.
+Télécharger [ici](https://github.com/c-noblet/papagei-app/releases/download/1.2.4/papagei.apk) l'application sur votre smartphone android.
 
 Ensuite en cliquant sur le fichier APK, une modale vous proposera d'installer l'application. Il se peut que vous ayez à autoriser l'installation des applications de sources inconnues. Vous pouvez suivre [ce tutoriel](https://www.wikihow.com/Allow-Apps-from-Unknown-Sources-on-Android) pour autoriser l'installation.
 
