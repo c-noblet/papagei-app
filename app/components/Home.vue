@@ -50,11 +50,11 @@ export default {
     // Parse video adding intents
     async getIntent(intent, args) {
       try {
-        this.loading = true;
         const url = getSharingIntent(args);
         if (url == null) {
           return false;
         } else {
+          this.loading = true;
           const id = url.split('watch?v=')[1];
           const infos = await fetchApi(`/info/${id}`);
           this.$store.commit('setForm', {
