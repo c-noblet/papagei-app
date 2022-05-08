@@ -1,7 +1,8 @@
 <template>
   <Page>
     <topbar />
-    <tabview />
+    <ActivityIndicator v-if="loading" :busy="loading"/>
+    <tabview v-else />
   </Page>
 </template>
 
@@ -11,7 +12,7 @@ import AddModal from './AddModal.vue';
 import Database from '../models/Database.Model';
 import Tabview from './Tabview.vue';
 import { Application } from '@nativescript/core';
-import { getSharingIntent, toast, fetchApi } from '../utils';
+import { getSharingIntent, fetchApi } from '../utils';
 import { bus } from '../app';
 export default {
   computed: {
@@ -25,7 +26,7 @@ export default {
   data() {
     return {
       playlist: [],
-      previousIntent : 'mounted'
+      loading : false
     }
   },
   async created() {
@@ -37,39 +38,23 @@ export default {
     bus.$on('reloadApp', () => {
       this.reloadApp();
     });
-
-    // Save previous intent
-    bus.$on('intent', (intent) => {
-      this.previousIntent = intent;
-    })
     
     bus.$emit('reloadApp');
 
     // Listen to new video intents
     Application.android.on('activityNewIntent', async (args) => {
-      if (this.previousIntent == 'mounted') {
-        this.getIntent('activityNewIntent', args);
-      }
-    });
-
-    Application.android.on('activityStarted', async (args) => {
-      if (this.previousIntent !== 'import') {
-        this.getIntent('activityStarted', args);
-      }
-      if (this.previousIntent == 'import') {
-        this.previousIntent = 'modalClosed';
-      }
+      this.getIntent('activityNewIntent', args);
     });
   },
   methods: {
     // Parse video adding intents
     async getIntent(intent, args) {
       try {
+        this.loading = true;
         const url = getSharingIntent(args);
-        if (url == null || intent == this.previousIntent) {
+        if (url == null) {
           return false;
         } else {
-          this.previousIntent = intent;
           const id = url.split('watch?v=')[1];
           const infos = await fetchApi(`/info/${id}`);
           this.$store.commit('setForm', {
@@ -78,6 +63,7 @@ export default {
             category: 0,
             picture: infos.picture
           });
+          this.loading = false;
           this.showModal();
           return url;
         }
@@ -98,7 +84,6 @@ export default {
           await global.db.add(form);
           bus.$emit('reloadApp');
         }
-        this.previousIntent = 'modalClosed';
       });
     },
   },
