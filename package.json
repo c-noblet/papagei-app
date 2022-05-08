@@ -1,7 +1,7 @@
 {
   "name": "papagei",
   "main": "app/app.js",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "private": true,
   "scripts": {
     "android": "ns run android",
