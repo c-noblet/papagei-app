@@ -38,7 +38,6 @@ export default {
     // Open File chooser for file import
     async importDb() {
       try {
-        bus.$emit('intent', 'import');
         const files = await openFilePicker({
           extensions: ['json']
         });
